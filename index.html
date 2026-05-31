@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hinahita — Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple: #7B5EA7;
+      --purple-light: #9B7EC8;
+      --purple-pale: #F0E8FF;
+      --bg: #F9F6FF;
+      --white: #FFFFFF;
+      --text: #1E1530;
+      --text-mid: #5A4F6E;
+      --text-light: #9589A8;
+      --border: #E4D9F5;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* LAYOUT */
+    .layout { display: flex; min-height: 100vh; }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 260px; flex-shrink: 0;
+      background: var(--white);
+      border-right: 1px solid var(--border);
+      padding: 40px 24px;
+      display: flex; flex-direction: column;
+      position: fixed; top: 0; left: 0; bottom: 0;
+    }
+    .sidebar-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem; color: var(--purple);
+      margin-bottom: 8px;
+    }
+    .sidebar-sub { font-size: 0.8rem; color: var(--text-light); margin-bottom: 40px; }
+
+    .sidebar nav { flex: 1; }
+    .sidebar nav ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+    .sidebar nav a {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px; border-radius: 10px;
+      text-decoration: none; color: var(--text-mid);
+      font-weight: 500; font-size: 0.95rem;
+      transition: all .18s;
+    }
+    .sidebar nav a:hover { background: var(--purple-pale); color: var(--purple); }
+    .sidebar nav a.active { background: var(--purple); color: white; }
+    .nav-icon { font-size: 1.1rem; }
+
+    .sidebar-socials { display: flex; gap: 12px; margin-top: 24px; }
+    .sidebar-socials a {
+      width: 38px; height: 38px;
+      border-radius: 10px; border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; text-decoration: none;
+      transition: background .18s, border-color .18s;
+    }
+    .sidebar-socials a:hover { background: var(--purple-pale); border-color: var(--purple); }
+
+    /* MAIN */
+    .main { margin-left: 260px; flex: 1; padding: 50px 60px; }
+
+    /* PAGE */
+    .page { display: none; animation: fadeIn .3s ease; }
+    .page.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* PAGE HEADER */
+    .page-header { margin-bottom: 48px; }
+    .page-header .label {
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--purple);
+      margin-bottom: 10px;
+    }
+    .page-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem; color: var(--text); line-height: 1.2;
+    }
+    .page-header p { margin-top: 14px; color: var(--text-mid); font-size: 1.05rem; line-height: 1.7; max-width: 580px; }
+
+    /* HOME PAGE */
+    .home-hero {
+      display: grid; grid-template-columns: 1fr auto;
+      gap: 40px; align-items: center;
+      background: var(--white);
+      border-radius: 20px;
+      padding: 48px 52px;
+      margin-bottom: 32px;
+      border: 1px solid var(--border);
+    }
+    .home-hero h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem; color: var(--text); margin-bottom: 16px;
+    }
+    .home-hero p { color: var(--text-mid); line-height: 1.75; font-size: 1rem; }
+    .home-hero svg { width: 160px; }
+    .hero-avatar {
+      width: 160px; height: 160px; border-radius: 50%;
+      object-fit: cover; flex-shrink: 0;
+      border: 4px solid var(--purple-pale);
+      box-shadow: 0 4px 20px rgba(123,94,167,0.15);
+    }
+
+    /* COMIC IMAGES GRID */
+    .comic-pages {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px; margin-top: 24px;
+    }
+    .comic-page-img {
+      border-radius: 12px; overflow: hidden;
+      border: 1px solid var(--border);
+      aspect-ratio: 3/4;
+      background: var(--purple-pale);
+      transition: transform .2s, box-shadow .2s;
+      cursor: pointer;
+    }
+    .comic-page-img:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(123,94,167,0.2); }
+    .comic-page-img img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
+
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .stat-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 16px; padding: 24px 20px;
+      text-align: center;
+    }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem; color: var(--purple);
+    }
+    .stat-label { font-size: 0.85rem; color: var(--text-light); margin-top: 4px; }
+
+    /* ART PAGE */
+    .filter-row {
+      display: flex; gap: 10px; flex-wrap: wrap;
+      position: sticky; top: 0; z-index: 10;
+      background: var(--bg);
+      padding: 14px 0;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+    .filter-btn {
+      padding: 8px 20px; border-radius: 50px;
+      border: 1.5px solid var(--border);
+      background: transparent; cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem; font-weight: 500;
+      color: var(--text-mid);
+      transition: all .18s;
+    }
+    .filter-btn.active, .filter-btn:hover {
+      border-color: var(--purple); background: var(--purple); color: white;
+    }
+
+    .art-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 18px; }
+    .art-item {
+      border-radius: 14px; overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--white);
+      transition: transform .2s, box-shadow .2s;
+      cursor: pointer;
+    }
+    .art-item:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(123,94,167,0.15); }
+    .art-thumb {
+      width: 100%; aspect-ratio: 1;
+      overflow: hidden;
+      background: #F0E8FF;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem;
+    }
+    .art-thumb img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      padding: 6px;
+      transition: transform .3s;
+    }
+    .art-item:hover .art-thumb img { transform: scale(1.05); }
+    .art-info { padding: 12px 14px; }
+    .art-title { font-weight: 600; font-size: 0.9rem; }
+    .art-cat { font-size: 0.75rem; color: var(--text-light); margin-top: 3px; }
+
+    .art-item.hidden { display: none; }
+
+    .empty-note {
+      grid-column: 1 / -1;
+      border: 2px dashed var(--border); border-radius: 14px;
+      padding: 32px; text-align: center;
+      color: var(--text-light); font-size: 0.9rem; line-height: 1.8;
+      display: none;
+    }
+    .empty-note.show { display: block; }
+
+    /* COMIC PAGE */
+    .comic-hero {
+      background: linear-gradient(135deg, var(--purple) 0%, #9B7EC8 100%);
+      border-radius: 20px; padding: 48px 52px;
+      color: white; margin-bottom: 32px;
+      display: flex; align-items: center; gap: 32px;
+    }
+    .comic-hero-icon { font-size: 4rem; flex-shrink: 0; }
+    .comic-hero h2 { font-family: 'Playfair Display', serif; font-size: 1.9rem; margin-bottom: 12px; }
+    .comic-hero p { opacity: 0.85; line-height: 1.7; }
+    .comic-hero .btn {
+      display: inline-block; margin-top: 20px;
+      padding: 12px 28px; background: white; color: var(--purple);
+      text-decoration: none; border-radius: 10px;
+      font-weight: 600; font-size: 0.95rem;
+      transition: transform .18s;
+    }
+    .comic-hero .btn:hover { transform: translateY(-2px); }
+
+    .chapters-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; }
+    .chapter-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 14px; padding: 20px 16px; text-align: center;
+      font-size: 0.9rem; font-weight: 600; color: var(--text-mid);
+      transition: all .18s; cursor: pointer;
+    }
+    .chapter-card:hover { border-color: var(--purple); color: var(--purple); }
+    .chapter-num { font-size: 1.4rem; margin-bottom: 6px; }
+
+    /* CONTACT PAGE */
+    .contact-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+    .contact-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px 24px;
+      text-decoration: none; color: var(--text);
+      display: flex; align-items: flex-start; gap: 16px;
+      transition: all .18s;
+    }
+    .contact-card:hover { border-color: var(--purple); box-shadow: 0 4px 20px rgba(123,94,167,0.12); }
+    .contact-card-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: var(--purple-pale); display: flex;
+      align-items: center; justify-content: center;
+      font-size: 1.4rem; flex-shrink: 0;
+    }
+    .contact-card h3 { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+    .contact-card p { font-size: 0.85rem; color: var(--text-light); }
+
+    @media (max-width: 780px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; padding: 24px 20px; }
+      .home-hero { grid-template-columns: 1fr; }
+      .home-hero svg { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">Hinahita</div>
+    <div class="sidebar-sub">цифрова художниця · авторка</div>
+    <nav>
+      <ul>
+        <li><a href="#" class="active" data-page="home"><span class="nav-icon">🏠</span> Головна</a></li>
+        <li><a href="#" data-page="art"><span class="nav-icon">🎨</span> Арти</a></li>
+        <li><a href="#" data-page="comic"><span class="nav-icon">📓</span> Комікс</a></li>
+        <li><a href="#" data-page="contact"><span class="nav-icon">✉️</span> Контакти</a></li>
+      </ul>
+    </nav>
+    <div class="sidebar-socials">
+      <a href="https://t.me/hinohito" target="_blank" title="Telegram">✈️</a>
+      <a href="https://www.instagram.com/hinkaluka" target="_blank" title="Instagram">📷</a>
+      <a href="https://www.wattpad.com/story/410501597" target="_blank" title="Wattpad">📖</a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HOME -->
+    <div class="page active" id="page-home">
+      <div class="page-header">
+        <div class="label">Ласкаво прошу</div>
+        <h1>Привіт, я Хінахіта</h1>
+        <p>Цифрова художниця, авторка книги та коміксу. Тут — мої роботи, персонажі та творчість.</p>
+      </div>
+      <div class="home-hero">
+        <div>
+          <h2>Цифровий арт & авторство</h2>
+          <p>Я малюю фан арти, розробляю власних персонажів, ілюструю книги та веду свій комікс на Wattpad. Творчість — це моя мова.</p>
+        </div>
+        <img class="hero-avatar"
+             src="зображення/я/95ad47c8-cde5-4530-824f-aad0a11bb8e6.png"
+             alt="Хінахіта"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-num">62+</div>
+          <div class="stat-label">Робіт у галереї</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">5</div>
+          <div class="stat-label">Сторінок коміксу</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">3</div>
+          <div class="stat-label">Соцмережі</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ART -->
+    <div class="page" id="page-art">
+      <div class="page-header">
+        <div class="label">Мої роботи</div>
+        <h1>Галерея арту</h1>
+        <p>Фан арти, власні персонажі та книжкові ілюстрації.</p>
+      </div>
+      <div class="filter-row">
+        <button class="filter-btn active" data-filter="all">Всі</button>
+        <button class="filter-btn" data-filter="fanart">🌟 Фан арт</button>
+        <button class="filter-btn" data-filter="chars">🐱 Персонажі</button>
+        <button class="filter-btn" data-filter="books">📚 Книжкові</button>
+        <button class="filter-btn" data-filter="gallery">🖼️ Галерея</button>
+      </div>
+      <div class="art-grid" id="artGrid">
+        <!-- заповнюється JavaScript нижче -->
+        <div class="empty-note" id="emptyNote">В цій категорії поки немає робіт.</div>
+      </div>
+    </div>
+
+    <!-- COMIC -->
+    <div class="page" id="page-comic">
+      <div class="page-header">
+        <div class="label">Авторська робота</div>
+        <h1>Мій комікс</h1>
+      </div>
+      <div class="comic-hero">
+        <div class="comic-hero-icon">📓</div>
+        <div>
+          <h2>Читай на Wattpad</h2>
+          <p>Мій авторський комікс та розповіді. Нові частини виходять регулярно — підписуйся, щоб не пропустити!</p>
+          <a href="https://www.wattpad.com/story/410501597" target="_blank" class="btn">Читати →</a>
+        </div>
+      </div>
+      <h3 style="font-size:1rem; color:var(--text-mid); margin-bottom:16px;">Сторінки коміксу</h3>
+      <div class="comic-pages">
+        <div class="comic-page-img">
+          <img src="зображення/комікс/35db3c97-2a2e-409a-9b9d-37c8453838aa.png" alt="Сторінка 1">
+        </div>
+        <div class="comic-page-img">
+          <img src="зображення/комікс/4b0cc502-4b52-4da0-81c0-550eadd0fdcf.png" alt="Сторінка 2">
+        </div>
+        <div class="comic-page-img">
+          <img src="зображення/комікс/5cc0cb88-c3bf-4870-a14a-a6373b4bdeee.png" alt="Сторінка 3">
+        </div>
+        <div class="comic-page-img">
+          <img src="зображення/комікс/b63c66f6-5982-4c71-9fdc-a676be004b76.png" alt="Сторінка 4">
+        </div>
+        <div class="comic-page-img">
+          <img src="зображення/комікс/d9eb5d2d-5893-423c-974b-3a1dba9a40c3.png" alt="Сторінка 5">
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="page" id="page-contact">
+      <div class="page-header">
+        <div class="label">Зв'яжись</div>
+        <h1>Контакти</h1>
+        <p>Знайди мене в соцмережах або напиши особисто.</p>
+      </div>
+      <div class="contact-grid">
+        <a href="https://t.me/hinohito" target="_blank" class="contact-card">
+          <div class="contact-card-icon">✈️</div>
+          <div>
+            <h3>Telegram</h3>
+            <p>@hinohito</p>
+          </div>
+        </a>
+        <a href="https://www.instagram.com/hinkaluka" target="_blank" class="contact-card">
+          <div class="contact-card-icon">📸</div>
+          <div>
+            <h3>Instagram</h3>
+            <p>@hinkaluka</p>
+          </div>
+        </a>
+        <a href="https://www.wattpad.com/story/410501597" target="_blank" class="contact-card">
+          <div class="contact-card-icon">📖</div>
+          <div>
+            <h3>Wattpad</h3>
+            <p>Hinahita</p>
+          </div>
+        </a>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // ── ДАНІ ГАЛЕРЕЇ ──────────────────────────────────────────
+  const BASE = 'зображення/';
+
+  const CATS = {
+    fanart: {
+      folder: 'фанарт',
+      label: 'Фан арт',
+      emoji: '🌟',
+      files: [
+        '022cf0ad-ba17-4c47-958f-3c8e64ebca74.png',
+        '183be621-de62-486b-bb6b-573eae340e67.png',
+        '2c6c7624-e308-48f2-bafb-21bc6d03678e.png',
+        '8dfaa107-536a-4040-aec2-d1e3df44420d.png',
+        'b70c4b23-4290-4155-bdbc-4222e0285f5b.png',
+        'fb8a333f-df2e-42bc-83f8-96ca4b4dc778.png',
+      ]
+    },
+    chars: {
+      folder: 'персонажі',
+      label: 'Персонажі',
+      emoji: '🐱',
+      files: [
+        '1ff09e55-9a37-4613-90da-43acbe7b9852.png',
+        'a4fa6601-b84d-4c61-b240-3ac09a0a218e.png',
+        'c8c6d2ab-b2a0-4c09-94ee-055a4348d159.png',
+        'cf11968d-873b-4a29-bf98-17ee464879cc.png',
+        'dfc0488d-ef3f-46c9-8c70-c076fbf2858f.png',
+        'f0ba8ae1-f991-4f9e-beed-8eba5d79fd96.png',
+      ]
+    },
+    books: {
+      folder: 'книжкові ілюстрації',
+      label: 'Книжкові',
+      emoji: '📚',
+      files: [
+        '18448991-3e5b-4a54-8604-9f2e111210f8.png',
+        '2331a604-8536-4b9f-9178-ff1ed437ac61.png',
+        '6b33c64e-7c64-4de6-8be9-cf0b21a9f351.png',
+        '8df0d887-c1a8-4d33-95b4-0ea56b2868f3.png',
+        '93d0dcff-b1ea-4ede-baad-f34fdab0edef.png',
+        'a8d6b911-2abd-4583-b44c-c7983e1433a4.png',
+        'c240a93d-94c9-42e0-9f57-a0a6fb4bf09f.png',
+        'c45b5cc4-3fd6-48e6-b236-1bf5ad151f98.png',
+        'e9ceb51d-9a82-42b4-9084-52fe93c7a374.png',
+      ]
+    },
+    gallery: {
+      folder: 'галерея  робіт',
+      label: 'Галерея',
+      emoji: '🖼️',
+      files: [
+        '02c8f06f-be6c-46d9-9711-d7607d3b0e08.png',
+        '08acb6da-b9b6-4494-bf2e-c8341b48f5b6.png',
+        '1129b8b7-9cf9-465c-91c9-5effb5bdf311.png',
+        '142ba65a-d9c8-44ac-8adb-8b94e8328a3d.png',
+        '1a8e15b1-3164-4442-a159-779a2009c63f.png',
+        '1cea27db-f6b7-4a32-b018-70baa5df4071.png',
+        '205fac2a-8b5f-4c29-840d-8b6d5637af94.png',
+        '27e07498-a223-48c4-a86c-873b37b34e3c.png',
+        '2b52fbe6-a396-4183-8281-ba827698d6cf.png',
+        '34452a45-de0e-491b-853f-42083606d9bd.png',
+        '3b980601-fdaf-4a53-aaf0-0f197b72571d.png',
+        '42d08008-832f-4244-aa8f-39c0dcc03df5.png',
+        '459f2abc-513c-4acb-83c4-67b8f506caad.png',
+        '46da8a91-cd67-481b-bc63-65e87ffcad00.png',
+        '48d20ee5-ece3-4a20-a3fe-9b7cbffdf7e4.png',
+        '535dc9d8-adf9-4c09-8a50-5fb248a03f21.png',
+        '5e746ed4-e66f-46de-879d-bbdbe24be420.png',
+        '5ed87693-1dde-42b4-9829-ccae1e6cbeaa.png',
+        '617c1bcf-303f-4c0e-beb7-3369e4184265.png',
+        '7034cd4e-66cb-4b1b-b21f-1f6c7270e865.png',
+        '779989ee-db44-4c35-9af5-abcec0441c72.png',
+        '7c6187f3-61fe-484b-b9a1-ae6e5e2dfa54.png',
+        '7eb68a46-d3d7-49a8-b3cd-49451a9b2f8f.png',
+        '7fc00726-e233-475d-801e-77624aae337a.png',
+        '826fba2c-6e64-43bd-a510-5f23a1871a73.png',
+        '861bd86f-e7eb-4500-aced-871a0a42609e.png',
+        '9a193063-1554-4b4f-acf2-53b836b186b4.png',
+        '9ba8096b-a061-4a3c-b3c2-3d26e528b950.png',
+        'a661402b-de10-4d95-970e-0be78c77e631.png',
+        'a8e10130-d82e-4302-a1f9-d1d1421dcd73.png',
+        'a9a0f6ff-60c6-4791-8f33-3e3ae1b32cb1.png',
+        'aa551542-ebb5-4454-975b-c6168d71601a.png',
+        'aa982efb-b2e1-4a51-9c2a-d3c36fbe9375.png',
+        'b70880c7-72d1-4583-8ff4-de006f75ff85.png',
+        'bd675b82-78a6-4396-a536-29b00eb825bb.png',
+        'c098d236-75a6-497e-817e-fb308d876ec0.png',
+        'c3ed0e1d-b22e-42e1-b4b3-c93027c5cb23.png',
+        'cdf4cd8f-a23d-4fbb-9249-b63b34bc1aef.png',
+        'ec2ce050-f94d-4f71-a070-e67fabd3b1ff.png',
+        'f04e8e63-67ae-45f4-8d41-f2be177afdee.png',
+        'f5f1856f-daec-4ef7-81bb-d9112bfd1322.png',
+      ]
+    }
+  };
+
+  // ── ГЕНЕРАЦІЯ ГАЛЕРЕЇ ──────────────────────────────────────
+  function buildGallery(filter) {
+    const grid = document.getElementById('artGrid');
+    const note = document.getElementById('emptyNote');
+    grid.innerHTML = '';
+    grid.appendChild(note);
+
+    const keys = filter === 'all' ? Object.keys(CATS) : [filter];
+    let count = 0;
+
+    keys.forEach(key => {
+      const cat = CATS[key];
+      cat.files.forEach((file, i) => {
+        const src = BASE + cat.folder + '/' + file;
+        const el = document.createElement('div');
+        el.className = 'art-item';
+        el.dataset.cat = key;
+        el.innerHTML =
+          '<div class="art-thumb">' +
+            '<img src="' + src + '" alt="' + cat.label + ' ' + (i + 1) + '" ' +
+                 'onerror="this.parentElement.innerHTML=\'' + cat.emoji + '\'">' +
+          '</div>' +
+          '<div class="art-info">' +
+            '<div class="art-title">' + cat.label + ' ' + (i + 1) + '</div>' +
+            '<div class="art-cat">' + cat.label + '</div>' +
+          '</div>';
+        grid.insertBefore(el, note);
+        count++;
+      });
+    });
+
+    note.classList.toggle('show', count === 0);
+  }
+
+  // ── НАВІГАЦІЯ ──────────────────────────────────────────────
+  document.querySelectorAll('[data-page]').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const id = link.dataset.page;
+      document.querySelectorAll('[data-page]').forEach(l => l.classList.remove('active'));
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      link.classList.add('active');
+      document.getElementById('page-' + id).classList.add('active');
+    });
+  });
+
+  // ── ФІЛЬТРИ ────────────────────────────────────────────────
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      buildGallery(btn.dataset.filter);
+    });
+  });
+
+  // початкова загрузка галереї
+  buildGallery('all');
+</script>
+
+</body>
+</html>
