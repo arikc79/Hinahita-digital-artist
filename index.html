@@ -256,6 +256,40 @@
       .home-hero { grid-template-columns: 1fr; }
       .home-hero svg { display: none; }
     }
+
+    /* LIGHTBOX */
+    .lightbox {
+      display: none;
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(10,8,20,0.92);
+      align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 100%; max-height: 90vh;
+      border-radius: 10px;
+      box-shadow: 0 20px 80px rgba(0,0,0,0.6);
+      object-fit: contain;
+    }
+    .lb-close {
+      position: fixed; top: 18px; right: 24px;
+      font-size: 2rem; color: white; cursor: pointer;
+      line-height: 1; opacity: 0.75;
+      transition: opacity .15s;
+      background: none; border: none;
+    }
+    .lb-close:hover { opacity: 1; }
+    .lb-prev, .lb-next {
+      position: fixed; top: 50%; transform: translateY(-50%);
+      font-size: 2rem; color: white; cursor: pointer;
+      background: none; border: none; opacity: 0.6;
+      transition: opacity .15s; padding: 12px;
+    }
+    .lb-prev:hover, .lb-next:hover { opacity: 1; }
+    .lb-prev { left: 16px; }
+    .lb-next { right: 16px; }
+    .art-item { cursor: zoom-in; }
   </style>
 </head>
 <body>
@@ -403,6 +437,14 @@
     </div>
 
   </main>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" id="lbClose">✕</button>
+  <button class="lb-prev" id="lbPrev">‹</button>
+  <img id="lbImg" src="" alt="">
+  <button class="lb-next" id="lbNext">›</button>
 </div>
 
 <script>
@@ -559,6 +601,54 @@
 
   // початкова загрузка галереї
   buildGallery('all');
+
+  // ── LIGHTBOX ──────────────────────────────────────────────
+  let lbSrcs = [];
+  let lbIdx = 0;
+
+  function openLightbox(srcs, idx) {
+    lbSrcs = srcs;
+    lbIdx = idx;
+    document.getElementById('lbImg').src = lbSrcs[lbIdx];
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function lbStep(dir) {
+    lbIdx = (lbIdx + dir + lbSrcs.length) % lbSrcs.length;
+    document.getElementById('lbImg').src = lbSrcs[lbIdx];
+  }
+
+  document.getElementById('lbClose').addEventListener('click', closeLightbox);
+  document.getElementById('lbPrev').addEventListener('click', () => lbStep(-1));
+  document.getElementById('lbNext').addEventListener('click', () => lbStep(1));
+  document.getElementById('lightbox').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeLightbox();
+  });
+  document.addEventListener('keydown', e => {
+    if (!document.getElementById('lightbox').classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') lbStep(-1);
+    if (e.key === 'ArrowRight') lbStep(1);
+  });
+
+  // відкриття при кліку на арт-картку
+  document.getElementById('artGrid').addEventListener('click', e => {
+    const item = e.target.closest('.art-item');
+    if (!item) return;
+    const img = item.querySelector('img');
+    if (!img) return;
+
+    const allItems = [...document.querySelectorAll('#artGrid .art-item:not(.hidden)')];
+    const srcs = allItems.map(i => i.querySelector('img')?.src).filter(Boolean);
+    const idx = allItems.indexOf(item);
+    openLightbox(srcs, idx);
+  });
 </script>
 
 </body>
