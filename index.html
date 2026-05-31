@@ -290,63 +290,70 @@
     /* ════════════════════════════════════════
        CONTACTS PAGE
     ════════════════════════════════════════ */
-    .contacts-wrap { position: relative; }
-    .contacts-top { text-align: center; margin-bottom: 36px; }
+    .contacts-wrap {
+      position: relative;
+      background: rgba(255,255,255,0.6);
+      border-radius: 20px; padding: 36px 40px;
+      border: 1px solid var(--border);
+    }
+    .contacts-top { text-align: center; margin-bottom: 32px; }
     .contacts-socials-btn {
-      display: inline-block; padding: 11px 32px;
-      background: rgba(255,255,255,0.75); border: 1.5px solid var(--border);
-      border-radius: 50px; color: var(--text-mid); font-size: 0.9rem;
-      font-weight: 600; cursor: default;
-      backdrop-filter: blur(6px);
+      display: inline-block; padding: 10px 28px;
+      background: rgba(240,232,255,0.8); border: 1.5px solid var(--border);
+      border-radius: 50px; color: var(--text-mid); font-size: 0.88rem;
+      font-weight: 600;
     }
 
-    .contacts-grid {
-      display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: start;
+    .contacts-body {
+      display: grid; grid-template-columns: 1fr 260px; gap: 20px; align-items: start;
     }
-    .contacts-links { display: flex; flex-direction: column; gap: 0; }
+
+    /* social links */
+    .contacts-links { display: flex; flex-direction: column; }
     .contact-link-row {
-      display: flex; align-items: center; gap: 20px;
-      padding: 18px 0; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 18px;
+      padding: 16px 12px; border-bottom: 1px solid var(--border);
       text-decoration: none; color: var(--text);
-      transition: background .15s; border-radius: 8px;
+      border-radius: 10px; transition: background .15s;
     }
     .contact-link-row:last-child { border-bottom: none; }
-    .contact-link-row:hover { background: var(--purple-pale); padding-left: 12px; }
-    .contact-icon-wrap {
-      width: 54px; height: 54px; border-radius: 50%;
+    .contact-link-row:hover { background: var(--purple-pale); }
+    .contact-icon-img {
+      width: 52px; height: 52px; border-radius: 50%;
+      object-fit: cover; flex-shrink: 0;
+      mix-blend-mode: multiply;
+    }
+    .icon-circle {
+      width: 52px; height: 52px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.5rem; flex-shrink: 0; overflow: hidden;
+      font-size: 1.4rem; flex-shrink: 0;
     }
     .icon-tg { background: #2AABEE; }
-    .icon-ig { background: linear-gradient(135deg, #f09433,#e6683c,#dc2743,#cc2366,#bc1888); }
-    .icon-wp { background: #FF6600; }
+    .icon-ig { background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); }
     .contact-link-url {
-      font-size: 0.95rem; color: var(--purple); font-weight: 500;
-      word-break: break-all; line-height: 1.4;
+      font-size: 0.92rem; color: var(--purple); font-weight: 500;
+      word-break: break-all; line-height: 1.45;
     }
 
-    /* cats & decorations */
-    .contacts-deco {
-      display: flex; flex-direction: column; align-items: center; gap: 0;
-      position: relative; min-width: 220px;
+    /* right decoration column */
+    .contacts-deco { display: flex; flex-direction: column; align-items: center; gap: 0; }
+    .deco-cat-orange {
+      width: 100%; max-width: 240px;
+      mix-blend-mode: multiply;
     }
-    .cat-top-svg { width: 180px; }
-    .for-you-text {
-      font-family: 'Caveat', cursive;
-      font-size: 1.6rem; color: var(--text);
-      margin: 4px 0; letter-spacing: 0.04em;
+    .deco-foryou {
+      width: 100%; max-width: 240px; margin-top: -8px;
+      mix-blend-mode: multiply;
     }
-    .cat-bottom-svg { width: 160px; margin-top: -10px; }
 
-    .thank-you-row {
-      text-align: right; margin-top: 32px;
+    /* bottom row */
+    .contacts-bottom {
+      margin-top: 24px;
+      display: flex; justify-content: flex-end;
     }
-    .thank-you {
-      font-family: 'Caveat', cursive;
-      font-size: 2.6rem; font-weight: 700;
-      color: var(--purple);
-      text-transform: uppercase;
-      letter-spacing: 0.02em;
+    .deco-dyakuyu {
+      max-width: 380px; width: 100%;
+      mix-blend-mode: multiply;
     }
 
     /* ════════════════════════════════════════
@@ -516,82 +523,44 @@
     <!-- ═══ CONTACT ═══ -->
     <div class="page" id="page-contact">
       <div class="contacts-wrap">
+
         <div class="contacts-top">
           <div class="contacts-socials-btn">Переглянути соцмережі</div>
         </div>
 
-        <div class="contacts-grid">
+        <div class="contacts-body">
+
+          <!-- ліва колонка — лінки -->
           <div class="contacts-links">
             <a href="https://t.me/hinohito" target="_blank" class="contact-link-row">
-              <div class="contact-icon-wrap icon-tg">✈️</div>
+              <div class="icon-circle icon-tg">✈️</div>
               <div class="contact-link-url">https://t.me/hinohito</div>
             </a>
+
             <a href="https://www.instagram.com/hinkaluka" target="_blank" class="contact-link-row">
-              <div class="contact-icon-wrap icon-ig">📸</div>
+              <div class="icon-circle icon-ig">📸</div>
               <div class="contact-link-url">https://www.instagram.com/hinkaluka</div>
             </a>
+
             <a href="https://www.wattpad.com/story/410501597" target="_blank" class="contact-link-row">
-              <div class="contact-icon-wrap icon-wp">📖</div>
+              <img class="contact-icon-img" src="зображення/контакти/cat-small.png" alt="Wattpad">
               <div class="contact-link-url">https://www.wattpad.com/story/410501597</div>
             </a>
           </div>
 
-          <!-- кішки праворуч -->
+          <!-- права колонка — кішки -->
           <div class="contacts-deco">
-            <!-- верхня кішка — кругла руда -->
-            <svg class="cat-top-svg" viewBox="0 0 180 160" xmlns="http://www.w3.org/2000/svg">
-              <polygon points="30,65 45,20 70,58" fill="#E8A87C"/>
-              <polygon points="34,64 46,24 67,57" fill="#F5C6A0" opacity="0.7"/>
-              <polygon points="110,58 135,20 150,65" fill="#E8A87C"/>
-              <polygon points="113,57 134,24 146,64" fill="#F5C6A0" opacity="0.7"/>
-              <ellipse cx="90" cy="100" rx="72" ry="62" fill="#EFAA70"/>
-              <ellipse cx="90" cy="100" rx="72" ry="62" fill="none" stroke="#E8A87C" stroke-width="2"/>
-              <!-- eyes closed / sleepy -->
-              <path d="M62 90 Q70 84 78 90" stroke="#4A3F55" stroke-width="3" fill="none" stroke-linecap="round"/>
-              <path d="M102 90 Q110 84 118 90" stroke="#4A3F55" stroke-width="3" fill="none" stroke-linecap="round"/>
-              <!-- triangle nose -->
-              <polygon points="90,104 86,110 94,110" fill="#E57373"/>
-              <!-- blush -->
-              <ellipse cx="58" cy="112" rx="14" ry="9" fill="#F48FB1" opacity="0.4"/>
-              <ellipse cx="122" cy="112" rx="14" ry="9" fill="#F48FB1" opacity="0.4"/>
-              <!-- ear triangles pink -->
-              <polygon points="37,62 48,30 64,56" fill="#F5C6A0" opacity="0.5"/>
-              <polygon points="116,56 132,30 143,62" fill="#F5C6A0" opacity="0.5"/>
-            </svg>
-
-            <div class="for-you-text">For You =^.^=</div>
-
-            <!-- нижня кішка — біла лінійна -->
-            <svg class="cat-bottom-svg" viewBox="0 0 160 140" xmlns="http://www.w3.org/2000/svg">
-              <polygon points="22,58 35,18 54,50" fill="none" stroke="#888" stroke-width="2.5" stroke-linejoin="round"/>
-              <polygon points="106,50 125,18 138,58" fill="none" stroke="#888" stroke-width="2.5" stroke-linejoin="round"/>
-              <ellipse cx="80" cy="88" rx="60" ry="50" fill="white" stroke="#888" stroke-width="2.5"/>
-              <!-- eyes -->
-              <circle cx="60" cy="82" r="8" fill="white" stroke="#888" stroke-width="2"/>
-              <circle cx="100" cy="82" r="8" fill="white" stroke="#888" stroke-width="2"/>
-              <circle cx="61" cy="83" r="4.5" fill="#4A3F55"/>
-              <circle cx="101" cy="83" r="4.5" fill="#4A3F55"/>
-              <circle cx="63" cy="81" r="1.5" fill="white"/>
-              <circle cx="103" cy="81" r="1.5" fill="white"/>
-              <!-- nose -->
-              <polygon points="80,96 77,101 83,101" fill="#F0C4DA"/>
-              <!-- mouth -->
-              <path d="M77 102 Q80 106 83 102" stroke="#C9A6E4" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-              <!-- blush -->
-              <ellipse cx="47" cy="98" rx="10" ry="7" fill="#F0C4DA" opacity="0.5"/>
-              <ellipse cx="113" cy="98" rx="10" ry="7" fill="#F0C4DA" opacity="0.5"/>
-              <!-- whiskers -->
-              <line x1="12" y1="90" x2="52" y2="93" stroke="#aaa" stroke-width="1.2" stroke-linecap="round"/>
-              <line x1="12" y1="97" x2="52" y2="96" stroke="#aaa" stroke-width="1.2" stroke-linecap="round"/>
-              <line x1="108" y1="93" x2="148" y2="90" stroke="#aaa" stroke-width="1.2" stroke-linecap="round"/>
-              <line x1="108" y1="96" x2="148" y2="97" stroke="#aaa" stroke-width="1.2" stroke-linecap="round"/>
-            </svg>
+            <img class="deco-cat-orange" src="зображення/контакти/cat-orange.png" alt="">
+            <img class="deco-foryou"     src="зображення/контакти/cat-foryou.png" alt="For You">
           </div>
+
         </div>
 
-        <div class="thank-you-row">
-          <div class="thank-you">ДЯКУЮ ЗА ПЕРЕГЛЯД</div>
+        <!-- ДЯКУЮ -->
+        <div class="contacts-bottom">
+          <img class="deco-dyakuyu" src="зображення/контакти/dyakuyu.png" alt="Дякую за перегляд">
         </div>
+
       </div>
     </div>
 
