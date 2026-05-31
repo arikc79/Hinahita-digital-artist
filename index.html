@@ -55,6 +55,12 @@
       display: flex; flex-direction: column;
       position: fixed; top: 0; left: 0; bottom: 0;
     }
+    .sidebar-avatar {
+      width: 72px; height: 72px; border-radius: 50%;
+      object-fit: cover; border: 2.5px solid var(--purple-mid);
+      margin-bottom: 12px; display: block;
+      background: var(--purple-pale);
+    }
     .sidebar-logo {
       font-family: 'Caveat', cursive;
       font-size: 1.7rem; color: var(--purple);
@@ -388,6 +394,7 @@
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
+    <img class="sidebar-avatar" src="зображення/я/1.png" alt="Хінахіта">
     <div class="sidebar-logo">Hinahita</div>
     <div class="sidebar-sub">цифрова художниця · авторка</div>
     <nav>
@@ -421,7 +428,7 @@
           <span class="home-btn" onclick="goPage('art')">Переглянути портфоліо</span>
         </div>
         <div class="portrait-frame">
-          <img src="зображення/я/95ad47c8-cde5-4530-824f-aad0a11bb8e6.png"
+          <img src="зображення/я/1.png"
                alt="Хінахіта" onerror="this.style.display='none'">
         </div>
       </div>
