@@ -21,6 +21,10 @@
       --text-mid: #5A4F6E;
       --text-light: #9589A8;
       --border: #E4D9F5;
+
+      /* Emil: custom easing — not built-in CSS easings */
+      --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+      --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
     }
 
     html { scroll-behavior: smooth; }
@@ -75,10 +79,16 @@
       padding: 11px 14px; border-radius: 10px;
       text-decoration: none; color: var(--text-mid);
       font-weight: 500; font-size: 0.93rem;
-      transition: all .18s;
+      /* Emil: specific properties, not `all`; custom easing */
+      transition: background-color 160ms var(--ease-out), color 160ms var(--ease-out);
     }
-    .sidebar nav a:hover { background: var(--purple-pale); color: var(--purple); }
     .sidebar nav a.active { background: var(--purple); color: white; }
+    /* Emil: guard hover with pointer media query — touch devices fire hover on tap */
+    @media (hover: hover) and (pointer: fine) {
+      .sidebar nav a:hover:not(.active) { background: var(--purple-pale); color: var(--purple); }
+    }
+    /* Emil: `:active` gives instant tactile feedback */
+    .sidebar nav a:active { transform: scale(0.98); }
     .nav-icon { font-size: 1.05rem; }
 
     .sidebar-socials { display: flex; gap: 10px; margin-top: 24px; }
@@ -87,18 +97,34 @@
       border: 1px solid var(--border);
       display: flex; align-items: center; justify-content: center;
       font-size: 1rem; text-decoration: none;
-      transition: background .18s, border-color .18s;
+      /* Emil: specific properties only */
+      transition: background-color 160ms var(--ease-out), border-color 160ms var(--ease-out), transform 120ms var(--ease-out);
       background: rgba(255,255,255,0.7);
     }
-    .sidebar-socials a:hover { background: var(--purple-pale); border-color: var(--purple); }
+    @media (hover: hover) and (pointer: fine) {
+      .sidebar-socials a:hover { background: var(--purple-pale); border-color: var(--purple); }
+    }
+    .sidebar-socials a:active { transform: scale(0.92); }
 
     /* MAIN */
     .main { margin-left: 240px; flex: 1; padding: 48px 56px; }
 
-    /* PAGE */
-    .page { display: none; animation: fadeIn .3s ease; }
-    .page.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    /* PAGE TRANSITIONS
+       Emil: @starting-style = CSS-native entry animation without JS.
+       Fires when element transitions from display:none to display:block. */
+    .page { display: none; }
+    .page.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 280ms var(--ease-out), transform 280ms var(--ease-out);
+    }
+    @starting-style {
+      .page.active {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+    }
 
     /* ════════════════════════════════════════
        HOME PAGE
@@ -114,7 +140,6 @@
       position: relative; overflow: hidden;
       margin-bottom: 28px;
     }
-    /* sakura decoration top-left */
     .home-hero::before {
       content: '🌸';
       position: absolute; left: -10px; top: -10px;
@@ -137,9 +162,18 @@
       background: var(--purple-pale); border: 2px solid var(--purple-mid);
       color: var(--purple); border-radius: 50px;
       text-decoration: none; font-weight: 600; font-size: 0.95rem;
-      transition: all .2s; cursor: pointer;
+      cursor: pointer;
+      /* Emil: specific properties; transform for :active */
+      transition: background-color 180ms var(--ease-out),
+                  color 180ms var(--ease-out),
+                  border-color 180ms var(--ease-out),
+                  transform 140ms var(--ease-out);
     }
-    .home-btn:hover { background: var(--purple); color: white; border-color: var(--purple); }
+    @media (hover: hover) and (pointer: fine) {
+      .home-btn:hover { background: var(--purple); color: white; border-color: var(--purple); }
+    }
+    /* Emil: scale(0.97) on :active — button acknowledges the press */
+    .home-btn:active { transform: scale(0.97); }
 
     .portrait-frame {
       width: 240px; height: 300px;
@@ -149,9 +183,7 @@
       box-shadow: 6px 6px 0 var(--purple-mid), 0 16px 40px rgba(123,94,167,0.18);
       flex-shrink: 0;
     }
-    .portrait-frame img {
-      width: 100%; height: 100%; object-fit: contain;
-    }
+    .portrait-frame img { width: 100%; height: 100%; object-fit: contain; }
 
     .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
     .stat-card {
@@ -165,9 +197,7 @@
     /* ════════════════════════════════════════
        ABOUT PAGE
     ════════════════════════════════════════ */
-    .about-header {
-      text-align: center; margin-bottom: 36px;
-    }
+    .about-header { text-align: center; margin-bottom: 36px; }
     .about-title {
       font-family: 'Playfair Display', serif;
       font-style: italic; font-size: 3rem;
@@ -185,12 +215,16 @@
       background: white; padding: 10px 10px 36px;
       border: 1px solid var(--border); border-radius: 6px;
       box-shadow: 4px 6px 20px rgba(123,94,167,0.13);
-      width: 210px; transition: transform .22s;
+      width: 210px;
+      /* Emil: specific property, custom easing */
+      transition: transform 220ms var(--ease-out);
     }
     .about-photo:nth-child(1) { transform: rotate(-2.5deg); }
     .about-photo:nth-child(2) { transform: rotate(1.5deg); margin-top: -12px; }
     .about-photo:nth-child(3) { transform: rotate(-1deg); }
-    .about-photo:hover { transform: rotate(0deg) scale(1.04) !important; z-index: 2; }
+    @media (hover: hover) and (pointer: fine) {
+      .about-photo:hover { transform: rotate(0deg) scale(1.04) !important; z-index: 2; }
+    }
     .about-photo img {
       width: 100%; aspect-ratio: 3/4;
       object-fit: contain; display: block;
@@ -224,22 +258,40 @@
       background: rgba(255,255,255,0.8);
       cursor: pointer; font-family: 'Inter', sans-serif;
       font-size: 0.9rem; font-weight: 500; color: var(--text-mid);
-      transition: all .18s;
+      /* Emil: specific properties */
+      transition: background-color 160ms var(--ease-out),
+                  color 160ms var(--ease-out),
+                  border-color 160ms var(--ease-out),
+                  transform 120ms var(--ease-out);
     }
-    .filter-btn.active, .filter-btn:hover {
-      border-color: var(--purple); background: var(--purple); color: white;
+    .filter-btn.active { border-color: var(--purple); background: var(--purple); color: white; }
+    @media (hover: hover) and (pointer: fine) {
+      .filter-btn:not(.active):hover { border-color: var(--purple); background: var(--purple); color: white; }
     }
+    .filter-btn:active { transform: scale(0.96); }
 
     .art-grid {
       display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;
     }
+
+    /* Emil: stagger art items on entry */
+    @keyframes artFadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
     .art-item {
       border-radius: 14px; overflow: hidden;
       border: 1px solid var(--border); background: var(--white);
-      transition: transform .2s, box-shadow .2s; cursor: zoom-in;
+      cursor: zoom-in;
+      /* Emil: transform only — no box-shadow in transition (triggers paint) */
+      transition: transform 200ms var(--ease-out);
+      animation: artFadeIn 280ms var(--ease-out) both;
     }
-    .art-item:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(123,94,167,0.15); }
+    @media (hover: hover) and (pointer: fine) {
+      .art-item:hover { transform: translateY(-4px); }
+    }
     .art-item.hidden { display: none; }
+
     .art-thumb {
       width: 100%; aspect-ratio: 1; overflow: hidden;
       background: var(--purple-pale);
@@ -247,12 +299,16 @@
     }
     .art-thumb img {
       width: 100%; height: 100%; object-fit: contain; padding: 6px;
-      transition: transform .3s;
+      /* Emil: custom easing on image scale */
+      transition: transform 280ms var(--ease-out);
     }
-    .art-item:hover .art-thumb img { transform: scale(1.04); }
+    @media (hover: hover) and (pointer: fine) {
+      .art-item:hover .art-thumb img { transform: scale(1.05); }
+    }
     .art-info { padding: 11px 13px; }
     .art-title { font-weight: 600; font-size: 0.88rem; }
     .art-cat { font-size: 0.73rem; color: var(--text-light); margin-top: 3px; }
+
     .empty-note {
       grid-column: 1/-1; border: 2px dashed var(--border);
       border-radius: 14px; padding: 28px; text-align: center;
@@ -274,18 +330,28 @@
     .comic-hero .btn {
       display: inline-block; margin-top: 18px; padding: 11px 26px;
       background: white; color: var(--purple); text-decoration: none;
-      border-radius: 10px; font-weight: 600; font-size: 0.9rem; transition: transform .18s;
+      border-radius: 10px; font-weight: 600; font-size: 0.9rem;
+      transition: transform 160ms var(--ease-out);
     }
-    .comic-hero .btn:hover { transform: translateY(-2px); }
+    @media (hover: hover) and (pointer: fine) {
+      .comic-hero .btn:hover { transform: translateY(-2px); }
+    }
+    /* Emil: press feedback */
+    .comic-hero .btn:active { transform: scale(0.97); }
+
     .comic-pages {
       display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; margin-top: 20px;
     }
     .comic-page-img {
       border-radius: 12px; overflow: hidden; border: 1px solid var(--border);
       aspect-ratio: 3/4; background: var(--purple-pale);
-      transition: transform .2s, box-shadow .2s; cursor: zoom-in;
+      /* Emil: transform only, no box-shadow */
+      transition: transform 200ms var(--ease-out);
+      cursor: zoom-in;
     }
-    .comic-page-img:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(123,94,167,0.2); }
+    @media (hover: hover) and (pointer: fine) {
+      .comic-page-img:hover { transform: translateY(-4px); }
+    }
     .comic-page-img img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
 
     /* ════════════════════════════════════════
@@ -304,87 +370,112 @@
       border-radius: 50px; color: var(--text-mid); font-size: 0.88rem;
       font-weight: 600;
     }
-
-    .contacts-body {
-      display: grid; grid-template-columns: 1fr 260px; gap: 20px; align-items: start;
-    }
-
-    /* social links */
+    .contacts-body { display: grid; grid-template-columns: 1fr 260px; gap: 20px; align-items: start; }
     .contacts-links { display: flex; flex-direction: column; }
     .contact-link-row {
       display: flex; align-items: center; gap: 18px;
       padding: 16px 12px; border-bottom: 1px solid var(--border);
       text-decoration: none; color: var(--text);
-      border-radius: 10px; transition: background .15s;
+      border-radius: 10px;
+      transition: background-color 150ms var(--ease-out), transform 140ms var(--ease-out);
     }
     .contact-link-row:last-child { border-bottom: none; }
-    .contact-link-row:hover { background: var(--purple-pale); }
-    .contact-icon-img {
-      width: 52px; height: 52px; border-radius: 50%;
-      object-fit: cover; flex-shrink: 0;
-      mix-blend-mode: multiply;
+    @media (hover: hover) and (pointer: fine) {
+      .contact-link-row:hover { background: var(--purple-pale); }
     }
-    .icon-circle {
-      width: 52px; height: 52px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.4rem; flex-shrink: 0;
-    }
-    .icon-tg { background: #2AABEE; }
-    .icon-ig { background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); }
-    .contact-link-url {
-      font-size: 0.92rem; color: var(--purple); font-weight: 500;
-      word-break: break-all; line-height: 1.45;
-    }
-
-    /* right decoration column */
-    .contacts-deco { display: flex; flex-direction: column; align-items: center; gap: 0; }
-    .deco-cat-orange {
-      width: 100%; max-width: 240px;
-      mix-blend-mode: multiply;
-    }
-    .deco-foryou {
-      width: 100%; max-width: 240px; margin-top: -8px;
-      mix-blend-mode: multiply;
-    }
-
-    /* bottom row */
-    .contacts-bottom {
-      margin-top: 24px;
-      display: flex; justify-content: flex-end;
-    }
-    .deco-dyakuyu {
-      max-width: 380px; width: 100%;
-      mix-blend-mode: multiply;
-    }
+    .contact-link-row:active { transform: scale(0.99); }
+    .contact-icon-img { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; flex-shrink: 0; mix-blend-mode: multiply; }
+    .icon-circle { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+    .contact-link-url { font-size: 0.92rem; color: var(--purple); font-weight: 500; word-break: break-all; line-height: 1.45; }
+    .contacts-deco { display: flex; flex-direction: column; align-items: center; }
+    .deco-cat-orange { width: 100%; max-width: 240px; mix-blend-mode: multiply; }
+    .deco-foryou { width: 100%; max-width: 240px; margin-top: -8px; mix-blend-mode: multiply; }
+    .contacts-bottom { margin-top: 24px; display: flex; justify-content: flex-end; }
+    .deco-dyakuyu { max-width: 380px; width: 100%; mix-blend-mode: multiply; }
 
     /* ════════════════════════════════════════
        LIGHTBOX
+       Emil: opacity+visibility instead of display:none — enables transitions
     ════════════════════════════════════════ */
     .lightbox {
-      display: none; position: fixed; inset: 0; z-index: 1000;
+      display: flex;
+      position: fixed; inset: 0; z-index: 1000;
       background: rgba(10,8,20,0.92);
       align-items: center; justify-content: center; padding: 20px;
+      /* hidden state */
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      /* Emil: visibility delay on close so it hides after fade-out completes */
+      transition: opacity 200ms var(--ease-out), visibility 0ms 200ms;
     }
-    .lightbox.open { display: flex; }
+    .lightbox.open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: all;
+      transition: opacity 200ms var(--ease-out), visibility 0ms 0ms;
+    }
+
+    /* Emil: image enters with scale — nothing in real world appears from nothing */
     .lightbox img {
       max-width: 100%; max-height: 90vh; border-radius: 10px;
       box-shadow: 0 20px 80px rgba(0,0,0,0.6); object-fit: contain;
+      transform: scale(0.95);
+      opacity: 0;
+      transition: transform 280ms var(--ease-out), opacity 220ms var(--ease-out);
     }
+    .lightbox.open img {
+      transform: scale(1);
+      opacity: 1;
+    }
+    /* Emil: when navigating images — quick cross-fade */
+    .lightbox img.is-changing {
+      transform: scale(0.97);
+      opacity: 0;
+      transition-duration: 100ms;
+    }
+
     .lb-close {
       position: fixed; top: 18px; right: 24px; font-size: 2rem;
-      color: white; cursor: pointer; line-height: 1; opacity: 0.75;
-      transition: opacity .15s; background: none; border: none;
+      color: white; cursor: pointer; line-height: 1;
+      background: none; border: none;
+      transition: opacity 150ms var(--ease-out), transform 120ms var(--ease-out);
+      opacity: 0.75;
     }
-    .lb-close:hover { opacity: 1; }
+    @media (hover: hover) and (pointer: fine) {
+      .lb-close:hover { opacity: 1; }
+    }
+    .lb-close:active { transform: scale(0.88); opacity: 1; }
+
     .lb-prev, .lb-next {
       position: fixed; top: 50%; transform: translateY(-50%);
       font-size: 2.5rem; color: white; cursor: pointer;
       background: none; border: none; opacity: 0.6;
-      transition: opacity .15s; padding: 12px;
+      transition: opacity 150ms var(--ease-out), transform 150ms var(--ease-out);
+      padding: 12px;
     }
-    .lb-prev:hover, .lb-next:hover { opacity: 1; }
+    @media (hover: hover) and (pointer: fine) {
+      .lb-prev:hover { opacity: 1; transform: translateY(-50%) translateX(-2px); }
+      .lb-next:hover { opacity: 1; transform: translateY(-50%) translateX(2px); }
+    }
+    .lb-prev:active, .lb-next:active { opacity: 1; }
     .lb-prev { left: 16px; }
     .lb-next { right: 16px; }
+
+    /* ════════════════════════════════════════
+       ACCESSIBILITY — prefers-reduced-motion
+       Emil: fewer and gentler animations, not zero
+    ════════════════════════════════════════ */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        transition-delay: 0ms !important;
+      }
+    }
 
     @media (max-width: 800px) {
       .sidebar { display: none; }
@@ -402,7 +493,7 @@
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
-    <img class="sidebar-avatar" src="зображення/я/1.png" alt="Хінахіта">
+    <img class="sidebar-avatar" src="https://raw.githubusercontent.com/arikc79/Hinahita-digital-artist/main/зображення/я/1.png" alt="Хінахіта">
     <div class="sidebar-logo">Hinahita</div>
     <div class="sidebar-sub">цифрова художниця · авторка</div>
     <nav>
@@ -437,7 +528,7 @@
           <span class="home-btn" onclick="goPage('art')">Переглянути портфоліо</span>
         </div>
         <div class="portrait-frame">
-          <img src="зображення/я/1.png"
+          <img src="https://raw.githubusercontent.com/arikc79/Hinahita-digital-artist/main/зображення/я/1.png"
                alt="Хінахіта" onerror="this.style.display='none'">
         </div>
       </div>
@@ -468,13 +559,13 @@
       </div>
       <div class="about-photos">
         <div class="about-photo">
-          <img src="зображення/я/2.png" alt="Фото 1">
+          <img src="https://raw.githubusercontent.com/arikc79/Hinahita-digital-artist/main/зображення/я/2.png" alt="Фото 1">
         </div>
         <div class="about-photo">
-          <img src="зображення/я/3.png" alt="Фото 2">
+          <img src="https://raw.githubusercontent.com/arikc79/Hinahita-digital-artist/main/зображення/я/3.png" alt="Фото 2">
         </div>
         <div class="about-photo">
-          <img src="зображення/я/4.png" alt="Фото 3">
+          <img src="https://raw.githubusercontent.com/arikc79/Hinahita-digital-artist/main/зображення/я/4.png" alt="Фото 3">
         </div>
       </div>
     </div>
@@ -513,11 +604,11 @@
       </div>
       <h3 style="font-size:0.95rem;color:var(--text-mid);margin-bottom:14px;">Сторінки коміксу</h3>
       <div class="comic-pages" id="comicPages">
-        <div class="comic-page-img"><img src="зображення/комікс/1.png" alt="Сторінка 1"></div>
-        <div class="comic-page-img"><img src="зображення/комікс/2.png" alt="Сторінка 2"></div>
-        <div class="comic-page-img"><img src="зображення/комікс/3.png" alt="Сторінка 3"></div>
-        <div class="comic-page-img"><img src="зображення/комікс/4.png" alt="Сторінка 4"></div>
-        <div class="comic-page-img"><img src="зображення/комікс/5.png" alt="Сторінка 5"></div>
+        <div class="comic-page-img"><img src="https://raw.githubusercontent.com/arikc79/Hinahita-digital-artist/main/зображення/комікс/1.png" alt="Сторінка 1"></div>
+        <div class="comic-page-img"><img src="https://raw.githubusercontent.com/arikc79/Hinahita-digital-artist/main/зображення/комікс/2.png" alt="Сторінка 2"></div>
+        <div class="comic-page-img"><img src="https://raw.githubusercontent.com/arikc79/Hinahita-digital-artist/main/зображення/комікс/3.png" alt="Сторінка 3"></div>
+        <div class="comic-page-img"><img src="https://raw.githubusercontent.com/arikc79/Hinahita-digital-artist/main/зображення/комікс/4.png" alt="Сторінка 4"></div>
+        <div class="comic-page-img"><img src="https://raw.githubusercontent.com/arikc79/Hinahita-digital-artist/main/зображення/комікс/5.png" alt="Сторінка 5"></div>
       </div>
     </div>
 
@@ -529,7 +620,7 @@
         <p>Читай мою книгу онлайн на Wattpad.</p>
       </div>
       <div class="comic-hero">
-        <img src="зображення/книжкові ілюстрації/1.png" alt="Обкладинка"
+        <img src="https://raw.githubusercontent.com/arikc79/Hinahita-digital-artist/main/зображення/книжкові ілюстрації/1.png" alt="Обкладинка"
              style="width:280px;height:auto;border-radius:10px;object-fit:contain;flex-shrink:0;box-shadow:4px 4px 16px rgba(0,0,0,0.2);">
         <div>
           <h2>Читай на Wattpad</h2>
@@ -542,26 +633,19 @@
     <!-- ═══ CONTACT ═══ -->
     <div class="page" id="page-contact">
       <div class="contacts-wrap">
-
         <div class="contacts-top">
           <div class="contacts-socials-btn">Переглянути соцмережі</div>
         </div>
-
         <div class="contacts-body">
-
-          <!-- ліва колонка — лінки -->
           <div class="contacts-links">
             <a href="https://t.me/hinohito" target="_blank" class="contact-link-row">
-              <!-- Telegram -->
               <svg class="icon-circle" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="28" cy="28" r="28" fill="#2AABEE"/>
                 <path d="M13 27.5 C13 27.5 27 21.5 33 19C36 17.7 41 15.8 41 15.8C41 15.8 43.5 14.9 43.3 17.2C43.2 18.5 42.3 23 41.5 27.9C40.3 34.2 39 41 39 41C39 41 38.8 43 37 43.1C35.2 43.2 32.3 41.3 31.5 40.7C30.8 40.1 27.5 37.9 26.9 37.3C26.3 36.7 25.7 36.1 27 34.9C30 32.1 33.5 28.7 35.5 26.7C36.5 25.7 35.5 25.1 34.3 26L22 34.5C22 34.5 20.3 35.6 17.2 34.7C14.1 33.8 13 27.5 13 27.5Z" fill="white"/>
               </svg>
               <div class="contact-link-url">https://t.me/hinohito</div>
             </a>
-
             <a href="https://www.instagram.com/hinkaluka" target="_blank" class="contact-link-row">
-              <!-- Instagram -->
               <svg class="icon-circle" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   <radialGradient id="ig-grad" cx="30%" cy="107%" r="130%">
@@ -579,9 +663,7 @@
               </svg>
               <div class="contact-link-url">https://www.instagram.com/hinkaluka</div>
             </a>
-
             <a href="https://www.wattpad.com/story/410501597" target="_blank" class="contact-link-row">
-              <!-- Wattpad -->
               <svg class="icon-circle" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="28" cy="28" r="28" fill="#FF6122"/>
                 <text x="28" y="36" text-anchor="middle" font-family="Georgia,serif" font-weight="bold" font-size="24" fill="white">W</text>
@@ -589,37 +671,31 @@
               <div class="contact-link-url">https://www.wattpad.com/story/410501597</div>
             </a>
           </div>
-
-          <!-- права колонка — кішки -->
           <div class="contacts-deco">
-            <img class="deco-cat-orange" src="зображення/контакти/cat-orange.png" alt="">
-            <img class="deco-foryou"     src="зображення/контакти/cat-foryou.png" alt="For You">
+            <img class="deco-cat-orange" src="https://raw.githubusercontent.com/arikc79/Hinahita-digital-artist/main/зображення/контакти/cat-orange.png" alt="">
+            <img class="deco-foryou" src="https://raw.githubusercontent.com/arikc79/Hinahita-digital-artist/main/зображення/контакти/cat-foryou.png" alt="For You">
           </div>
-
         </div>
-
-        <!-- ДЯКУЮ -->
         <div class="contacts-bottom">
-          <img class="deco-dyakuyu" src="зображення/контакти/dyakuyu.png" alt="Дякую за перегляд">
+          <img class="deco-dyakuyu" src="https://raw.githubusercontent.com/arikc79/Hinahita-digital-artist/main/зображення/контакти/dyakuyu.png" alt="Дякую за перегляд">
         </div>
-
       </div>
     </div>
 
   </main>
 </div>
 
-<!-- LIGHTBOX -->
-<div class="lightbox" id="lightbox">
-  <button class="lb-close" id="lbClose">✕</button>
-  <button class="lb-prev" id="lbPrev">‹</button>
+<!-- LIGHTBOX — завжди display:flex, ховаємо через opacity+visibility -->
+<div class="lightbox" id="lightbox" aria-hidden="true" aria-label="Перегляд зображення">
+  <button class="lb-close" id="lbClose" aria-label="Закрити">✕</button>
+  <button class="lb-prev" id="lbPrev" aria-label="Попереднє">‹</button>
   <img id="lbImg" src="" alt="">
-  <button class="lb-next" id="lbNext">›</button>
+  <button class="lb-next" id="lbNext" aria-label="Наступне">›</button>
 </div>
 
 <script>
-  // ── ДАНІ ГАЛЕРЕЇ ──────────────────────────────────
-  const BASE = 'зображення/';
+  // ── ГАЛЕРЕЯ — дані ─────────────────────────────────
+  const BASE = 'https://raw.githubusercontent.com/arikc79/Hinahita-digital-artist/main/зображення/';
   const CATS = {
     fanart: {
       folder: 'фанарт', label: 'Фан арт', emoji: '🌟',
@@ -643,52 +719,32 @@
     gallery: {
       folder: 'галерея  робіт', label: 'Галерея', emoji: '🖼️',
       files: [
-        '02c8f06f-be6c-46d9-9711-d7607d3b0e08.png',
-        '08acb6da-b9b6-4494-bf2e-c8341b48f5b6.png',
-        '1129b8b7-9cf9-465c-91c9-5effb5bdf311.png',
-        '142ba65a-d9c8-44ac-8adb-8b94e8328a3d.png',
-        '1a8e15b1-3164-4442-a159-779a2009c63f.png',
-        '1cea27db-f6b7-4a32-b018-70baa5df4071.png',
-        '205fac2a-8b5f-4c29-840d-8b6d5637af94.png',
-        '27e07498-a223-48c4-a86c-873b37b34e3c.png',
-        '2b52fbe6-a396-4183-8281-ba827698d6cf.png',
-        '34452a45-de0e-491b-853f-42083606d9bd.png',
-        '3b980601-fdaf-4a53-aaf0-0f197b72571d.png',
-        '42d08008-832f-4244-aa8f-39c0dcc03df5.png',
-        '459f2abc-513c-4acb-83c4-67b8f506caad.png',
-        '46da8a91-cd67-481b-bc63-65e87ffcad00.png',
-        '48d20ee5-ece3-4a20-a3fe-9b7cbffdf7e4.png',
-        '535dc9d8-adf9-4c09-8a50-5fb248a03f21.png',
-        '5e746ed4-e66f-46de-879d-bbdbe24be420.png',
-        '5ed87693-1dde-42b4-9829-ccae1e6cbeaa.png',
-        '617c1bcf-303f-4c0e-beb7-3369e4184265.png',
-        '7034cd4e-66cb-4b1b-b21f-1f6c7270e865.png',
-        '779989ee-db44-4c35-9af5-abcec0441c72.png',
-        '7c6187f3-61fe-484b-b9a1-ae6e5e2dfa54.png',
-        '7eb68a46-d3d7-49a8-b3cd-49451a9b2f8f.png',
-        '7fc00726-e233-475d-801e-77624aae337a.png',
-        '826fba2c-6e64-43bd-a510-5f23a1871a73.png',
-        '861bd86f-e7eb-4500-aced-871a0a42609e.png',
-        '9a193063-1554-4b4f-acf2-53b836b186b4.png',
-        '9ba8096b-a061-4a3c-b3c2-3d26e528b950.png',
-        'a661402b-de10-4d95-970e-0be78c77e631.png',
-        'a8e10130-d82e-4302-a1f9-d1d1421dcd73.png',
-        'a9a0f6ff-60c6-4791-8f33-3e3ae1b32cb1.png',
-        'aa551542-ebb5-4454-975b-c6168d71601a.png',
-        'aa982efb-b2e1-4a51-9c2a-d3c36fbe9375.png',
-        'b70880c7-72d1-4583-8ff4-de006f75ff85.png',
-        'bd675b82-78a6-4396-a536-29b00eb825bb.png',
-        'c098d236-75a6-497e-817e-fb308d876ec0.png',
-        'c3ed0e1d-b22e-42e1-b4b3-c93027c5cb23.png',
-        'cdf4cd8f-a23d-4fbb-9249-b63b34bc1aef.png',
-        'ec2ce050-f94d-4f71-a070-e67fabd3b1ff.png',
-        'f04e8e63-67ae-45f4-8d41-f2be177afdee.png',
+        '02c8f06f-be6c-46d9-9711-d7607d3b0e08.png','08acb6da-b9b6-4494-bf2e-c8341b48f5b6.png',
+        '1129b8b7-9cf9-465c-91c9-5effb5bdf311.png','142ba65a-d9c8-44ac-8adb-8b94e8328a3d.png',
+        '1a8e15b1-3164-4442-a159-779a2009c63f.png','1cea27db-f6b7-4a32-b018-70baa5df4071.png',
+        '205fac2a-8b5f-4c29-840d-8b6d5637af94.png','27e07498-a223-48c4-a86c-873b37b34e3c.png',
+        '2b52fbe6-a396-4183-8281-ba827698d6cf.png','34452a45-de0e-491b-853f-42083606d9bd.png',
+        '3b980601-fdaf-4a53-aaf0-0f197b72571d.png','42d08008-832f-4244-aa8f-39c0dcc03df5.png',
+        '459f2abc-513c-4acb-83c4-67b8f506caad.png','46da8a91-cd67-481b-bc63-65e87ffcad00.png',
+        '48d20ee5-ece3-4a20-a3fe-9b7cbffdf7e4.png','535dc9d8-adf9-4c09-8a50-5fb248a03f21.png',
+        '5e746ed4-e66f-46de-879d-bbdbe24be420.png','5ed87693-1dde-42b4-9829-ccae1e6cbeaa.png',
+        '617c1bcf-303f-4c0e-beb7-3369e4184265.png','7034cd4e-66cb-4b1b-b21f-1f6c7270e865.png',
+        '779989ee-db44-4c35-9af5-abcec0441c72.png','7c6187f3-61fe-484b-b9a1-ae6e5e2dfa54.png',
+        '7eb68a46-d3d7-49a8-b3cd-49451a9b2f8f.png','7fc00726-e233-475d-801e-77624aae337a.png',
+        '826fba2c-6e64-43bd-a510-5f23a1871a73.png','861bd86f-e7eb-4500-aced-871a0a42609e.png',
+        '9a193063-1554-4b4f-acf2-53b836b186b4.png','9ba8096b-a061-4a3c-b3c2-3d26e528b950.png',
+        'a661402b-de10-4d95-970e-0be78c77e631.png','a8e10130-d82e-4302-a1f9-d1d1421dcd73.png',
+        'a9a0f6ff-60c6-4791-8f33-3e3ae1b32cb1.png','aa551542-ebb5-4454-975b-c6168d71601a.png',
+        'aa982efb-b2e1-4a51-9c2a-d3c36fbe9375.png','b70880c7-72d1-4583-8ff4-de006f75ff85.png',
+        'bd675b82-78a6-4396-a536-29b00eb825bb.png','c098d236-75a6-497e-817e-fb308d876ec0.png',
+        'c3ed0e1d-b22e-42e1-b4b3-c93027c5cb23.png','cdf4cd8f-a23d-4fbb-9249-b63b34bc1aef.png',
+        'ec2ce050-f94d-4f71-a070-e67fabd3b1ff.png','f04e8e63-67ae-45f4-8d41-f2be177afdee.png',
         'f5f1856f-daec-4ef7-81bb-d9112bfd1322.png',
       ]
     }
   };
 
-  // ── ГЕНЕРАЦІЯ ГАЛЕРЕЇ ──────────────────────────────
+  // ── ГАЛЕРЕЯ — побудова ────────────────────────────
   function buildGallery(filter) {
     const grid = document.getElementById('artGrid');
     const note = document.getElementById('emptyNote');
@@ -703,9 +759,13 @@
         const el = document.createElement('div');
         el.className = 'art-item';
         el.dataset.cat = key;
+        // Emil: stagger — кожен елемент з'являється з затримкою
+        // Обмежуємо 10 елементами щоб не сповільнювати великі галереї
+        el.style.animationDelay = (Math.min(count, 10) * 35) + 'ms';
         el.innerHTML =
           '<div class="art-thumb">' +
             '<img src="' + src + '" alt="' + cat.label + ' ' + (i+1) + '" ' +
+                 'loading="lazy" ' +
                  'onerror="this.parentElement.innerHTML=\'' + cat.emoji + '\'">' +
           '</div>' +
           '<div class="art-info">' +
@@ -719,7 +779,7 @@
     note.classList.toggle('show', count === 0);
   }
 
-  // ── НАВІГАЦІЯ ──────────────────────────────────────
+  // ── НАВІГАЦІЯ ─────────────────────────────────────
   function goPage(id) {
     document.querySelectorAll('[data-page]').forEach(l => l.classList.remove('active'));
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -736,7 +796,7 @@
     });
   });
 
-  // ── ФІЛЬТРИ ────────────────────────────────────────
+  // ── ФІЛЬТРИ ───────────────────────────────────────
   document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -747,22 +807,34 @@
 
   buildGallery('all');
 
-  // ── LIGHTBOX ───────────────────────────────────────
+  // ── LIGHTBOX ──────────────────────────────────────
   let lbSrcs = [], lbIdx = 0;
 
   function openLightbox(srcs, idx) {
     lbSrcs = srcs; lbIdx = idx;
     document.getElementById('lbImg').src = lbSrcs[lbIdx];
-    document.getElementById('lightbox').classList.add('open');
+    const lb = document.getElementById('lightbox');
+    lb.classList.add('open');
+    lb.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
   }
+
   function closeLightbox() {
-    document.getElementById('lightbox').classList.remove('open');
+    const lb = document.getElementById('lightbox');
+    lb.classList.remove('open');
+    lb.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
   }
+
+  // Emil: image cross-fade on navigate — не різкий стрибок
   function lbStep(dir) {
-    lbIdx = (lbIdx + dir + lbSrcs.length) % lbSrcs.length;
-    document.getElementById('lbImg').src = lbSrcs[lbIdx];
+    const img = document.getElementById('lbImg');
+    img.classList.add('is-changing');
+    setTimeout(() => {
+      lbIdx = (lbIdx + dir + lbSrcs.length) % lbSrcs.length;
+      img.src = lbSrcs[lbIdx];
+      img.classList.remove('is-changing');
+    }, 110);
   }
 
   document.getElementById('lbClose').addEventListener('click', closeLightbox);
